@@ -67,7 +67,6 @@ func main() {
 			//	ver += mov
 			aim += mov
 		}
-		//fmt.Println(instruction, mov)
 	}
 
 	fmt.Println(ver * hor)
