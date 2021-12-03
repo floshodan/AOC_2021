@@ -8,7 +8,7 @@ import (
 	"os"
 )
 
-func main() {
+func main_() {
 
 	// horizontal forward
 	// depth up or down
@@ -97,4 +97,8 @@ func binary_to_decimal(slice []int) int {
 		j--
 	}
 	return sum
+}
+
+func problem2() {
+
 }
