@@ -12,8 +12,8 @@ func main() {
 
 	client := &http.Client{}
 
-	//req, err := http.NewRequest("GET", "http://"+os.Getenv("SERVER_IP")+"/input", nil)
-	req, err := http.NewRequest("GET", "https://adventofcode.com/2021/day/3/input", nil)
+	req, err := http.NewRequest("GET", "http://"+os.Getenv("SERVER_IP")+"/input", nil)
+	//req, err := http.NewRequest("GET", "https://adventofcode.com/2021/day/3/input", nil)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -125,10 +125,15 @@ func main() {
 		removed = 0
 		for j, v := range bits {
 			//fmt.Println(v[i])
+			if lenall-removed <= 2 {
+				fmt.Println("break")
+				break
+			}
+
 			if int(v[i]) != gammabits[i] {
 				//fmt.Printf("nope index =%d \n", j) // expect 0, 5, 6, 10, 11
-				bits[j] = "xxxxxxxxxxxx"
-				//bits[j] = "xxxxx"
+				//bits[j] = "xxxxxxxxxxxx"
+				bits[j] = "xxxxx"
 				removed++
 				continue
 			}
@@ -138,10 +143,6 @@ func main() {
 			//fmt.Println(left)
 		}
 
-		if lenall-removed <= 2 {
-			fmt.Println("break")
-			break
-		}
 		fmt.Printf("new line ---- i is %d removed = %d left = %d \n", i, removed, lenall-removed)
 		//	fmt.Println()
 		//  fmt.Println()
