@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 )
 
@@ -13,8 +14,8 @@ func main() {
 
 	client := &http.Client{}
 
-	req, err := http.NewRequest("GET", "http://"+os.Getenv("SERVER_IP")+"/input4", nil)
-	//req, err := http.NewRequest("GET", "https://adventofcode.com/2021/day/4/input", nil)
+	//req, err := http.NewRequest("GET", "http://"+os.Getenv("SERVER_IP")+"/input4", nil)
+	req, err := http.NewRequest("GET", "https://adventofcode.com/2021/day/4/input", nil)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -50,57 +51,96 @@ func main() {
 	fmt.Printf("---------------- \n")
 	//fmt.Println(line)
 	// start at one because 0 is bingo numbers
-	var bingogrid [5][5]string
-	counter := 0
+	var bingoboard [5][5]string
 	//line := strings.Fields(input[i]) // line[0] = 22; line[1] = 13; line[2] = 17; line[3] = 11; line[4] = 0
+	row := 0
 	for i := 2; i < len(input); i++ {
 		if input[i] == "" {
-			fmt.Println()
+			row = 0
+			boards = append(boards, bingoboard)
 			continue
 		}
-		//line := strings.Fields(input[i]) // line[0] = 22; line[1] = 13; line[2] = 17; line[3] = 11; line[4] = 0
-		// rows
-		for row := 0; row < 5; row++ {
-
-			//fill column
-			for col := 0; col < 5; col++ {
-				fmt.Printf("%s col=%d row=%d i = %d \n", line[col], col, row, i)
-				bingogrid[row][col] = line[col]
-
-				// bingogrid[0][0] = line[x] // 22 x = 0
-				// bingogrid[0][1] = line[1] // 13 x = 1
-				// bingogrid[0][4] = line[4] // 0  x = 4
-			}
-			if input[i+counter] == "" {
-				fmt.Println("HI THERE!")
-				counter = 0
-			} else {
-				fmt.Println("HERE!")
-				line = strings.Fields(input[i+counter])
-				counter += 1
-
-				boards = append(boards, bingogrid)
-				fmt.Println(bingogrid)
-			}
-
+		line = strings.Fields(input[i])
+		for col := 0; col < 5; col++ {
+			bingoboard[row][col] = line[col]
+			// bingogrid[0][0] = 22
+			// bingogrid[0][1] =13
 		}
-		// add bingogrid to boards[]
+		row += 1
+		if i == len(input)-1 {
+			boards = append(boards, bingoboard)
+		}
+	}
+	fmt.Printf("total boards = %d \n", len(boards))
+	fmt.Printf("boards array %s \n", boards)
+	fmt.Printf("---------------- \n")
 
-		/*		for y := 0; y < 5; y++ {
-					for z := 0; z < 5; z++ {
-						fmt.Printf("a[%d][%d] = %s\n", y, z, bingogrid[y][z])
+	winning_boards := make([]int, len(boards))
+
+	for _, v := range bingonumbers {
+		//fmt.Printf("number is %s \n", v)
+		//loop through boards
+		for i, _ := range boards {
+			if intInSlice(i, winning_boards) {
+				continue
+			}
+			for j := 0; j < 5; j++ {
+				for y := 0; y < 5; y++ {
+					//fmt.Println(boards[i][j][y])
+					if v == boards[i][j][y] {
+						//fmt.Printf("FOUND in Board %d at row=%d col=%d  \n", i+1, j+1, y+1)
+						boards[i][j][y] = "-1"
+						//check if won
+						won := check(boards[i], j, y)
+						if won {
+							//fmt.Printf("board %d with endnumber %s has won! \n", i+1, v)
+							winning_boards = append(winning_boards, i)
+							sum := 0
+							for row := 0; row < 5; row++ {
+								for col := 0; col < 5; col++ {
+									if boards[i][row][col] == "-1" {
+										continue
+									}
+									no, _ := strconv.Atoi(boards[i][row][col])
+									sum += no
+								}
+							}
+							endnumber, _ := strconv.Atoi(v)
+							fmt.Printf("board %d with endnumber %s has won! Boardsum=%d \n", i+1, v, sum*endnumber)
+						}
 					}
 				}
-		*/
+			}
+		}
+	}
+}
 
-		//fmt.Println(line)
+func check(board [5][5]string, row int, col int) bool {
+	won := true
+	for i := 0; i < 5; i++ {
+		if board[row][i] != "-1" {
+
+			for j := 0; j < 5; j++ {
+				if board[j][col] != "-1" {
+					return false
+				} else {
+					continue
+				}
+			}
+
+		} else {
+			continue
+		}
 	}
 
-	//fmt.Println(boards[0])
-	//fmt.Println(boards[0][1][0])
+	return won
+}
 
-	//for _, v := range bingo {
-	//fmt.Println(v)
-	//}
-
+func intInSlice(a int, list []int) bool {
+	for _, b := range list {
+		if b == a {
+			return true
+		}
+	}
+	return false
 }
