@@ -14,8 +14,8 @@ func main() {
 
 	client := &http.Client{}
 
-	req, err := http.NewRequest("GET", "http://"+os.Getenv("SERVER_IP")+"/input4", nil)
-	//req, err := http.NewRequest("GET", "https://adventofcode.com/2021/day/4/input", nil)
+	//req, err := http.NewRequest("GET", "http://"+os.Getenv("SERVER_IP")+"/input4", nil)
+	req, err := http.NewRequest("GET", "https://adventofcode.com/2021/day/4/input", nil)
 	if err != nil {
 		log.Fatalln(err)
 	}
