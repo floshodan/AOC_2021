@@ -10,11 +10,11 @@ import (
 	"strings"
 )
 
-func main_() {
+func main() {
 
 	client := &http.Client{}
 
-	//req, err := http.NewRequest("GET", "http://"+os.Getenv("SERVER_IP")+"/input4", nil)
+	//req, err := http.NewRequest("GET", "http://"+os.Getenv("SERVER_IP")+"/input6", nil)
 	req, err := http.NewRequest("GET", "https://adventofcode.com/2021/day/6/input", nil)
 	if err != nil {
 		log.Fatalln(err)
@@ -49,23 +49,42 @@ func main_() {
 		input_int = append(input_int, no)
 	}
 
-	// 3,4,3,1,2
-	// after one day 2 ... 0, reset to 6 + create new with 8
-	// each day if fish becomes 0 it becomes a 6 + adds new on with 8
-	// how many lanternwith after 80 day
-
+	fish := make([]int, 9)
+	//fishes = append(fishes, len(initial))
 	fmt.Printf("initial state = %s \n", initial)
-	for i := 0; i < 80; i++ {
+	for _, n := range input_int {
+		fish[n]++
+	}
+	fmt.Println(fish)
 
-		for i, v := range input_int {
-			if v != 0 {
-				input_int[i] = v - 1
-				continue
-			}
-			input_int[i] = 6
-			input_int = append(input_int, 8)
-		}
+	//fmt.Println(fish)
+	//next := make([]int, 9)
+	fishcount := 0
+	for i := 0; i < 256; i++ {
+		fishcount = nextDay(fish)
+	}
+
+	fmt.Println(fishcount)
+
+}
+
+// returns count of fishes the next day
+func nextDay(table []int) int {
+	backup_table := make([]int, 9)
+	backup_table[8] += table[0]
+	backup_table[6] += table[0]
+	for i := 1; i < 9; i++ {
+		backup_table[i-1] += table[i]
 
 	}
-	fmt.Println(len(input_int))
+	copy(table, backup_table)
+
+	//count fish
+	sum := 0
+	for _, v := range table {
+		sum += v
+	}
+
+	return sum
+
 }
